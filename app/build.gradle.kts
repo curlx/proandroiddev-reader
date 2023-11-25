@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
+    kotlin("plugin.serialization")
     id("com.google.dagger.hilt.android")
 }
 
@@ -60,8 +61,16 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    // Hilt
     implementation("com.google.dagger:hilt-android:2.48.1")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
+    // Ktor
+    implementation("io.ktor:ktor-client-android:2.1.3")
+    implementation("io.ktor:ktor-client-content-negotiation:2.1.3")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    // DateTime
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
 
     testImplementation("junit:junit:4.13.2")
 

@@ -1,15 +1,33 @@
 package com.ccb.proandroiddevreader.feed
 
 import androidx.lifecycle.ViewModel
+import com.ccb.proandroiddevreader.feed.usecases.GetNewsFeedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-
+    private val getNewsFeedUseCase: GetNewsFeedUseCase,
 ): ViewModel() {
 
-    fun updateFeed() {
+    private val _state: MutableStateFlow<FeedViewState> = MutableStateFlow(FeedViewState())
+    val state: StateFlow<FeedViewState> = _state.asStateFlow()
 
+    suspend fun updateFeed() {
+        getNewsFeedUseCase.getNewsFeed()
+            .onSuccess { newsFeed ->
+                println("=== success")
+                println(newsFeed)
+                _state.update {
+                    it.copy(news = newsFeed.news)
+                }
+            }
+            .onFailure {
+                it.printStackTrace()
+            }
     }
 }
