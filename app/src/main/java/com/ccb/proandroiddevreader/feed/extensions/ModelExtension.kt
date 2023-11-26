@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.service.models.NewsFeedItem
 import kotlinx.datetime.Instant
+import timber.log.Timber
 import java.text.ParseException
 
 fun NewsFeedItem.toNews(now: Long): News =
@@ -30,6 +31,6 @@ private fun convertPublishedTime(published: Instant, now: Long): String? =
         val time = published.toEpochMilliseconds()
         DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
     } catch (e: ParseException) {
-        e.printStackTrace()
+        Timber.e(e)
         null
     }

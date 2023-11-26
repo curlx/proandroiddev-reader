@@ -6,6 +6,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import timber.log.Timber
 import javax.inject.Inject
 
 class NewsFeedApi @Inject constructor(
@@ -19,7 +20,7 @@ class NewsFeedApi @Inject constructor(
             Result.success(result.body())
         } catch (e: Exception) {
             // TODO: create self exception
-            e.printStackTrace()
+            Timber.e(e)
             Result.failure(Exception("Server error"))
         }
     }
