@@ -8,10 +8,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -36,16 +36,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ProAndroidDevReaderTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
-                ) {
-                    val state by feedViewModel.state.collectAsState()
-
+                val state by feedViewModel.state.collectAsState()
+                Scaffold {
                     FeedScreen(
                         feedViewState = state,
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(it).padding(16.dp),
                         onSelectedNews = ::onSelectedNews
                     )
 

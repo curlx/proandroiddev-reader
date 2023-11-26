@@ -3,6 +3,8 @@ package com.ccb.proandroiddevreader.feed
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,14 +18,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
+import com.ccb.proandroiddevreader.R
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.ui.theme.ProAndroidDevReaderTheme
+import com.ccb.proandroiddevreader.ui.theme.WhiteAlpha
 
 @Composable
 fun FeedScreen(
@@ -31,12 +35,33 @@ fun FeedScreen(
     modifier: Modifier = Modifier,
     onSelectedNews: (News) -> Unit,
 ) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.articles),
+            style = MaterialTheme.typography.titleLarge,
+        )
+        NewsList(
+            news = feedViewState.news,
+            onSelectedNews = onSelectedNews,
+        )
+    }
+}
+
+@Composable
+fun NewsList(
+    news: List<News>,
+    onSelectedNews: (News) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(
-            items = feedViewState.news,
+            items = news,
             key = { it.title },
         ) { news ->
             ElevatedCard(
@@ -61,11 +86,11 @@ fun FeedScreen(
                     )
                     Text(
                         modifier = Modifier
+                            .wrapContentWidth()
                             .padding(16.dp)
                             .constrainAs(title) {
                                 top.linkTo(thumbnail.bottom)
                                 start.linkTo(parent.start)
-                                end.linkTo(parent.end)
                                 bottom.linkTo(parent.bottom)
                             },
                         text = news.title,
@@ -75,17 +100,20 @@ fun FeedScreen(
                         modifier = Modifier
                             .wrapContentWidth()
                             .clip(RoundedCornerShape(16.dp, 0.dp, 0.dp, 0.dp))
-                            .background(Color.White.copy(alpha = 0.7f))
-                            .padding(8.dp)
+                            .background(WhiteAlpha)
+                            .padding(vertical = 4.dp, horizontal = 8.dp)
                             .constrainAs(info) {
                                 bottom.linkTo(thumbnail.bottom)
                                 end.linkTo(thumbnail.end)
                             },
-                        text = "Published ${news.published} by ${news.author}",
+                        text = stringResource(R.string.published_by, news.published, news.author),
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
             }
+        }
+        item {
+            Spacer(Modifier.height(0.dp))
         }
     }
 }
