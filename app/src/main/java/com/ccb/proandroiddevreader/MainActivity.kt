@@ -1,6 +1,10 @@
 package com.ccb.proandroiddevreader
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,8 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ccb.proandroiddevreader.feed.FeedScreen
 import com.ccb.proandroiddevreader.feed.FeedViewModel
+import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.ui.theme.ProAndroidDevReaderTheme
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -38,7 +45,8 @@ class MainActivity : ComponentActivity() {
 
                     FeedScreen(
                         feedViewState = state,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
+                        onSelectedNews = ::onSelectedNews
                     )
 
                     LaunchedEffect(Unit) {
@@ -46,6 +54,19 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun onSelectedNews(news: News) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(news.link))
+            .apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        try {
+            startActivity(intent)
+        } catch (ex: ActivityNotFoundException) {
+            Toast.makeText(this, "Please install a web browser", Toast.LENGTH_SHORT).show()
+            Timber.e(ex)
         }
     }
 }
