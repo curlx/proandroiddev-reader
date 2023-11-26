@@ -71,9 +71,13 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
     // DateTime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
+    // Testing
     testImplementation("junit:junit:4.13.2")
 
+    // UI Testing
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))

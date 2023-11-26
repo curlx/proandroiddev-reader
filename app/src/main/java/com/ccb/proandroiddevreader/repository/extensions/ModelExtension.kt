@@ -11,6 +11,9 @@ fun NewsFeedResult.toNewsFeed(): NewsFeed =
                 title = newsItem.title,
                 thumbnail = "",
                 snippet = newsItem.content,
+                author = newsItem.author.name,
+                published = newsItem.published.toString(),
+                link = newsItem.url,
             )
         }
     )
