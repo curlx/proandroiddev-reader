@@ -1,6 +1,6 @@
 package com.ccb.proandroiddevreader.repository.models
 
-data class News(
+data class NewsData(
     val title: String,
     val thumbnail: String,
     val link: String,

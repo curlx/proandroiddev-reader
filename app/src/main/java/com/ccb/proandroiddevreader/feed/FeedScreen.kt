@@ -17,7 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.ccb.proandroiddevreader.repository.models.News
+import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.ui.theme.ProAndroidDevReaderTheme
 
 @Composable
@@ -79,7 +79,6 @@ fun FeedScreenPreview() {
                     News(
                         title = "Dive into Kotlin Coroutines",
                         thumbnail = "https://miro.medium.com/v2/resize:fit:720/format:webp/0*h1bruWVL-782e6V_",
-                        snippet = "In this article, I’ll give some basic information on how Kotlin coroutines actually work under the hood.",
                         author = "Nek.12",
                         published = "1 day ago",
                         link = "https://proandroiddev.com/dive-into-kotlin-coroutines-6f95dc4b7bf6?source=rss----c72404660798---4",

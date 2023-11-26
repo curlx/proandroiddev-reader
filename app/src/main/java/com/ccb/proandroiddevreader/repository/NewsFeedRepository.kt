@@ -1,7 +1,7 @@
 package com.ccb.proandroiddevreader.repository
 
-import com.ccb.proandroiddevreader.repository.models.NewsFeed
+import com.ccb.proandroiddevreader.service.models.NewsFeedResult
 
 interface NewsFeedRepository {
-    suspend fun getNewsFeed(): Result<NewsFeed>
+    suspend fun getNewsFeed(): Result<NewsFeedResult>
 }

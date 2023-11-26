@@ -19,11 +19,9 @@ class FeedViewModel @Inject constructor(
 
     suspend fun updateFeed() {
         getNewsFeedUseCase.getNewsFeed()
-            .onSuccess { newsFeed ->
-                println("=== success")
-                println(newsFeed)
+            .onSuccess { newsList ->
                 _state.update {
-                    it.copy(news = newsFeed.news)
+                    it.copy(news = newsList)
                 }
             }
             .onFailure {
