@@ -16,6 +16,8 @@ class GetNewsFeedUseCase @Inject constructor(
             it.copy(
                 news = it.news.map { news ->
                     news.copy(
+                        // TODO: handle excess content
+                        snippet = "",
                         thumbnail = parseThumbnailUrl(news.snippet) ?: "",
                         published = convertPublishedTime(news.published) ?: "",
                     )
