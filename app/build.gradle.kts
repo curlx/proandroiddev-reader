@@ -80,6 +80,9 @@ dependencies {
 
     // Testing
     testImplementation("junit:junit:4.13.2")
+    testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation("app.cash.turbine:turbine:1.0.0")
 
     // UI Testing
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
