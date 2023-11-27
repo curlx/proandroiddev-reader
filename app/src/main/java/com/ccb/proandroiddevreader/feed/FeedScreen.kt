@@ -1,30 +1,38 @@
 package com.ccb.proandroiddevreader.feed
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.ccb.proandroiddevreader.R
+import com.ccb.proandroiddevreader.extensions.lazyListItemPosition
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.ui.theme.ProAndroidDevReaderTheme
 import com.ccb.proandroiddevreader.ui.theme.WhiteAlpha
@@ -42,11 +50,26 @@ fun FeedScreen(
         Text(
             text = stringResource(R.string.articles),
             style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
         )
-        NewsList(
-            news = feedViewState.news,
-            onSelectedNews = onSelectedNews,
-        )
+        AnimatedContent(
+            targetState = feedViewState.news.isEmpty(),
+            label = "newsList"
+        ) { isEmpty ->
+            if (isEmpty) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                NewsList(
+                    news = feedViewState.news,
+                    onSelectedNews = onSelectedNews,
+                )
+            }
+        }
     }
 }
 
@@ -57,17 +80,20 @@ fun NewsList(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag("newsList"),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(
+        itemsIndexed(
             items = news,
-            key = { it.title },
-        ) { news ->
+            key = { _, news -> news.title },
+        ) { index, news ->
             ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onSelectedNews(news) }
+                    .lazyListItemPosition(index)
             ) {
                 ConstraintLayout() {
                     val (thumbnail, title, info) = createRefs()
@@ -92,7 +118,8 @@ fun NewsList(
                                 top.linkTo(thumbnail.bottom)
                                 start.linkTo(parent.start)
                                 bottom.linkTo(parent.bottom)
-                            },
+                            }
+                            .testTag("title"),
                         text = news.title,
                         style = MaterialTheme.typography.titleMedium,
                     )
@@ -105,7 +132,8 @@ fun NewsList(
                             .constrainAs(info) {
                                 bottom.linkTo(thumbnail.bottom)
                                 end.linkTo(thumbnail.end)
-                            },
+                            }
+                            .testTag("information"),
                         text = stringResource(R.string.published_by, news.published, news.author),
                         style = MaterialTheme.typography.bodySmall,
                     )
