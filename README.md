@@ -10,11 +10,12 @@ If you found the articles are useful, please support writers by subscribing to t
 # Technical information
 - Architecture: MVVM
 - Dependency Injection: Hilt
+- Build Management: Gradle Kotlin DSL, Version Catalog
 - UI: Jetpack Compose
 - Image Loader: Coil
 - Network: Ktor
 - Serialization: Kotlinx Serialization
-- DateTime: Kotlinx DateTime
+- DateTime: Threetenabp
 - Logging: Timber
 - Unit Test: assertk, mockito-kotlin, turbine
 - UI Test: Kakao Compose
@@ -23,3 +24,4 @@ If you found the articles are useful, please support writers by subscribing to t
 # Upcoming features
 - Bookmark articles
 - more...
+- 
