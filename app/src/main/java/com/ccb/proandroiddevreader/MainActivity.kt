@@ -27,7 +27,6 @@ import com.ccb.proandroiddevreader.ui.theme.ProAndroidDevReaderTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -38,11 +37,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProAndroidDevReaderTheme {
                 val state by feedViewModel.state.collectAsState()
+
                 Scaffold {
                     FeedScreen(
                         feedViewState = state,
                         modifier = Modifier.padding(it).padding(16.dp).testTag("MainScreen"),
-                        onSelectedNews = ::onSelectedNews
+                        onSelectedNews = ::onSelectedNews,
+                        onRefresh = { feedViewModel.updateFeed() }
                     )
 
                     LaunchedEffect(Unit) {
