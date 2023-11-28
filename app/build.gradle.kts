@@ -60,7 +60,7 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.bundles.ktor)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.datetime)
+    implementation(libs.threetenabp.time)
     implementation(libs.coil.compose)
     implementation(libs.timber)
 
@@ -69,6 +69,7 @@ dependencies {
     testImplementation(libs.assertk)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     // UI Testing
     androidTestImplementation(libs.kakao.compose)

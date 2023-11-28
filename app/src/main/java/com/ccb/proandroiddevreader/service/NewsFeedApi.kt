@@ -18,14 +18,14 @@ class NewsFeedApi @Inject constructor(
                 contentType(ContentType.Application.Json)
             }
             Result.success(result.body())
-        } catch (e: Exception) {
+        } catch (t: Throwable) {
             // TODO: create self exception
-            Timber.e(e)
-            Result.failure(Exception("Server error"))
+            Timber.e(t)
+            Result.failure(t)
         }
     }
 
     companion object {
-        private const val BASE_URL: String = "https://www.toptal.com/developers/feed2json/convert?url=https%3A%2F%2Fproandroiddev.com%2Ffeed"
+        private const val BASE_URL: String = "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fproandroiddev.com%2Ffeed"
     }
 }

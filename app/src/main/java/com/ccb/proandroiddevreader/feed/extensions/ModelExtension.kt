@@ -3,16 +3,19 @@ package com.ccb.proandroiddevreader.feed.extensions
 import android.text.format.DateUtils
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.service.models.NewsFeedItem
-import kotlinx.datetime.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
-import java.text.ParseException
+
+private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
 fun NewsFeedItem.toNews(now: Long): News =
     News(
         title = title,
         thumbnail = parseThumbnailUrl(content) ?: "",
-        link = url,
-        author = author.name,
+        link = link,
+        author = author,
         published = convertPublishedTime(published, now) ?: "",
     )
 
@@ -26,11 +29,11 @@ private fun parseThumbnailUrl(content: String): String? {
     }
 }
 
-private fun convertPublishedTime(published: Instant, now: Long): String? =
+private fun convertPublishedTime(published: String, now: Long): String? =
     try {
-        val time = published.toEpochMilliseconds()
+        val time = LocalDateTime.parse(published, dateTimeFormat).toInstant(ZoneOffset.UTC).toEpochMilli()
         DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
-    } catch (e: ParseException) {
-        Timber.e(e)
+    } catch (t: Throwable) {
+        Timber.e(t)
         null
     }
