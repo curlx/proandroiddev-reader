@@ -1,5 +1,6 @@
 package com.ccb.proandroiddevreader.feed.extensions
 
+import android.text.Html
 import android.text.format.DateUtils
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.service.models.NewsFeedItem
@@ -12,7 +13,7 @@ private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
 fun NewsFeedItem.toNews(now: Long): News =
     News(
-        title = title,
+        title = Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY).toString(),
         thumbnail = parseThumbnailUrl(content) ?: "",
         link = link,
         author = author,
