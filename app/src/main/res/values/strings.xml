@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">ProAndroidDev Reader</string>
-    <string name="published_by">Published %1$s by %2$s</string>
     <string name="articles">Articles</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="news">News</string>
+    <string name="published_by">Published %1$s by %2$s</string>
+    <string name="settings">Settings</string>
 </resources>

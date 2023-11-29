@@ -5,20 +5,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +31,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,28 +51,18 @@ fun FeedScreen(
     onRefresh: () -> Unit,
 ) {
     val refreshState = rememberPullRefreshState(feedViewState.isRefreshing, onRefresh)
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .pullRefresh(refreshState),
     ) {
-        Text(
-            text = stringResource(R.string.articles),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .pullRefresh(refreshState),
-        ) {
-            this@Column.AnimatedVisibility(visible = feedViewState.news.isNotEmpty()) {
-                NewsList(
-                    news = feedViewState.news,
-                    onSelectedNews = onSelectedNews,
-                )
-            }
-            PullRefreshIndicator(feedViewState.isRefreshing, refreshState, Modifier.align(TopCenter))
+        AnimatedVisibility(visible = feedViewState.news.isNotEmpty()) {
+            NewsList(
+                news = feedViewState.news,
+                onSelectedNews = onSelectedNews,
+            )
         }
+        PullRefreshIndicator(feedViewState.isRefreshing, refreshState, Modifier.align(TopCenter))
     }
 }
 
@@ -96,8 +88,8 @@ fun NewsList(
                     .clickable { onSelectedNews(news) }
                     .lazyListItemPosition(index)
             ) {
-                ConstraintLayout() {
-                    val (thumbnail, title, info) = createRefs()
+                ConstraintLayout {
+                    val (thumbnail, title, info, bookmark) = createRefs()
 
                     AsyncImage(
                         modifier = Modifier
@@ -113,16 +105,32 @@ fun NewsList(
                     )
                     Text(
                         modifier = Modifier
-                            .wrapContentWidth()
+                            .fillMaxWidth()
                             .padding(16.dp)
+                            .padding(start = 16.dp)
+                            .testTag("title")
                             .constrainAs(title) {
                                 top.linkTo(thumbnail.bottom)
                                 start.linkTo(parent.start)
                                 bottom.linkTo(parent.bottom)
-                            }
-                            .testTag("title"),
+                                end.linkTo(bookmark.start)
+                            },
                         text = news.title,
                         style = MaterialTheme.typography.titleMedium,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Icon(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(32.dp)
+                            .constrainAs(bookmark) {
+                                top.linkTo(title.top)
+                                bottom.linkTo(title.bottom)
+                                end.linkTo(parent.end)
+                            },
+                        imageVector = Icons.Outlined.BookmarkBorder,
+                        contentDescription = stringResource(R.string.bookmark),
                     )
                     Text(
                         modifier = Modifier

@@ -26,6 +26,7 @@ activity-compose = { module = "androidx.activity:activity-compose", version.ref 
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
 androidx-compose-material = { module = "androidx.compose.material:material" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
@@ -54,7 +55,7 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [bundles]
-compose = ["androidx-compose-material", "androidx-compose-material3", "androidx-compose-ui", "androidx-compose-ui-graphics",
+compose = ["androidx-compose-material", "androidx-compose-material3", "androidx-compose-material-icons-extended", "androidx-compose-ui", "androidx-compose-ui-graphics",
     "androidx-compose-ui-tooling-preview"]
 ktor = ["ktor-client-android", "ktor-serialization-kotlinx-json", "ktor-client-content-negotiation"]
 

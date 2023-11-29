@@ -8,14 +8,28 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.Newspaper
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.ccb.proandroiddevreader.feed.FeedScreen
 import com.ccb.proandroiddevreader.feed.FeedViewModel
 import com.ccb.proandroiddevreader.feed.models.News
+import com.ccb.proandroiddevreader.ui.model.BottomNavigationItem
 import com.ccb.proandroiddevreader.ui.theme.ProAndroidDevReaderTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -37,11 +52,62 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProAndroidDevReaderTheme {
                 val state by feedViewModel.state.collectAsState()
+                val items = listOf(
+                    BottomNavigationItem(
+                        title = getString(R.string.news),
+                        selectedIcon = Icons.Filled.Newspaper,
+                        unselectedIcon = Icons.Outlined.Newspaper,
+                    ),
+                    BottomNavigationItem(
+                        title = getString(R.string.bookmarks),
+                        selectedIcon = Icons.Filled.Bookmarks,
+                        unselectedIcon = Icons.Outlined.Bookmarks,
+                    ),
+                    BottomNavigationItem(
+                        title = getString(R.string.settings),
+                        selectedIcon = Icons.Filled.Settings,
+                        unselectedIcon = Icons.Outlined.Settings,
+                    ),
+                )
+                var selectedItemIndex by rememberSaveable {
+                    mutableIntStateOf(0)
+                }
 
-                Scaffold {
+                Scaffold(
+                    bottomBar = {
+                        NavigationBar {
+                            items.forEachIndexed { index, item ->
+                                NavigationBarItem(
+                                    selected = selectedItemIndex == index,
+                                    onClick = {
+                                        selectedItemIndex = index
+                                    },
+                                    label = {
+                                        Text(text = item.title)
+                                    },
+                                    icon = {
+                                        Box {
+                                            Icon(
+                                                imageVector = if (selectedItemIndex == index) {
+                                                    item.selectedIcon
+                                                } else {
+                                                    item.unselectedIcon
+                                                },
+                                                contentDescription = item.title,
+                                            )
+                                        }
+                                    },
+                                )
+                            }
+                        }
+                    }
+                ) {
                     FeedScreen(
                         feedViewState = state,
-                        modifier = Modifier.padding(it).padding(16.dp).testTag("MainScreen"),
+                        modifier = Modifier
+                            .padding(it)
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                            .testTag("MainScreen"),
                         onSelectedNews = ::onSelectedNews,
                         onRefresh = { feedViewModel.updateFeed() }
                     )
