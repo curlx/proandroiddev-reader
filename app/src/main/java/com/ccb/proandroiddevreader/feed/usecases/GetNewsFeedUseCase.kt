@@ -1,6 +1,6 @@
 package com.ccb.proandroiddevreader.feed.usecases
 
-import com.ccb.proandroiddevreader.feed.extensions.toNews
+import com.ccb.proandroiddevreader.extensions.toNews
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.repository.NewsFeedRepository
 import org.threeten.bp.Instant

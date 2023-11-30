@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -48,6 +49,7 @@ fun FeedScreen(
     modifier: Modifier = Modifier,
     onSelectedNews: (News) -> Unit,
     onRefresh: () -> Unit,
+    onToggleBookmark: (News) -> Unit,
 ) {
     val refreshState = rememberPullRefreshState(feedViewState.isRefreshing, onRefresh)
     Box(
@@ -59,6 +61,7 @@ fun FeedScreen(
             NewsList(
                 news = feedViewState.news,
                 onSelectedNews = onSelectedNews,
+                onToggleBookmark = onToggleBookmark,
             )
         }
         PullRefreshIndicator(feedViewState.isRefreshing, refreshState, Modifier.align(TopCenter))
@@ -69,6 +72,7 @@ fun FeedScreen(
 fun NewsList(
     news: List<News>,
     onSelectedNews: (News) -> Unit,
+    onToggleBookmark: (News) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -79,7 +83,7 @@ fun NewsList(
     ) {
         itemsIndexed(
             items = news,
-            key = { _, news -> news.title },
+            key = { _, news -> news.guid },
         ) { index, news ->
             ElevatedCard(
                 modifier = Modifier
@@ -123,12 +127,17 @@ fun NewsList(
                         modifier = Modifier
                             .padding(end = 8.dp)
                             .size(32.dp)
+                            .clickable { onToggleBookmark(news) }
                             .constrainAs(bookmark) {
                                 top.linkTo(title.top)
                                 bottom.linkTo(title.bottom)
                                 end.linkTo(parent.end)
                             },
-                        imageVector = Icons.Outlined.BookmarkBorder,
+                        imageVector = if (news.isBookmarked) {
+                            Icons.Outlined.Bookmark
+                        } else {
+                            Icons.Outlined.BookmarkBorder
+                        },
                         contentDescription = stringResource(R.string.bookmark),
                     )
                     Text(
@@ -165,16 +174,19 @@ fun FeedScreenPreview() {
                 news = listOf(
                     // TODO: Preview image when using coil?
                     News(
+                        guid = "https://medium.com/p/6f95dc4b7bf6",
                         title = "Dive into Kotlin Coroutines",
                         thumbnail = "https://miro.medium.com/v2/resize:fit:720/format:webp/0*h1bruWVL-782e6V_",
                         author = "Nek.12",
                         published = "1 day ago",
+                        publishedEpochMilli = 1701340909091,
                         link = "https://proandroiddev.com/dive-into-kotlin-coroutines-6f95dc4b7bf6?source=rss----c72404660798---4",
                     )
                 )
             ),
             onSelectedNews = {},
             onRefresh = {},
+            onToggleBookmark = {},
         )
     }
 }

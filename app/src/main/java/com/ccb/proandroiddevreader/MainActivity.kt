@@ -109,7 +109,10 @@ class MainActivity : ComponentActivity() {
                             .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                             .testTag("MainScreen"),
                         onSelectedNews = ::onSelectedNews,
-                        onRefresh = { feedViewModel.updateFeed() }
+                        onRefresh = { feedViewModel.updateFeed() },
+                        onToggleBookmark = { news ->
+                            feedViewModel.toggleNewsToBookmark(news)
+                        }
                     )
 
                     LaunchedEffect(Unit) {

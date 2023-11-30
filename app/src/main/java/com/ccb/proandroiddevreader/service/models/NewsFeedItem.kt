@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NewsFeedItem(
+    @SerialName("guid") val guid: String,
     @SerialName("title") val title: String,
     @SerialName("link") val link: String,
     @SerialName("content") val content: String,

@@ -1,4 +1,4 @@
-package com.ccb.proandroiddevreader.feed.extensions
+package com.ccb.proandroiddevreader.extensions
 
 import android.text.Html
 import android.text.format.DateUtils
@@ -13,11 +13,13 @@ private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
 fun NewsFeedItem.toNews(now: Long): News =
     News(
+        guid = guid,
         title = Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY).toString(),
         thumbnail = parseThumbnailUrl(content) ?: "",
         link = link,
         author = author,
         published = convertPublishedTime(published, now) ?: "",
+        publishedEpochMilli = convertPublishedEpochMilli(published),
     )
 
 private fun parseThumbnailUrl(content: String): String? {
@@ -29,6 +31,14 @@ private fun parseThumbnailUrl(content: String): String? {
         }
     }
 }
+
+private fun convertPublishedEpochMilli(published: String): Long =
+    try {
+        LocalDateTime.parse(published, dateTimeFormat).toInstant(ZoneOffset.UTC).toEpochMilli()
+    } catch (t: Throwable) {
+        Timber.e(t)
+        0
+    }
 
 private fun convertPublishedTime(published: String, now: Long): String? =
     try {
