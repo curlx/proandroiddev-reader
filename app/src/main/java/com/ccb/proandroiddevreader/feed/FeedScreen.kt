@@ -40,7 +40,6 @@ import com.ccb.proandroiddevreader.R
 import com.ccb.proandroiddevreader.extensions.lazyListItemPosition
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.ui.theme.ProAndroidDevReaderTheme
-import com.ccb.proandroiddevreader.ui.theme.WhiteAlpha
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -136,7 +135,7 @@ fun NewsList(
                         modifier = Modifier
                             .wrapContentWidth()
                             .clip(RoundedCornerShape(16.dp, 0.dp, 0.dp, 0.dp))
-                            .background(WhiteAlpha)
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
                             .padding(vertical = 4.dp, horizontal = 8.dp)
                             .constrainAs(info) {
                                 bottom.linkTo(thumbnail.bottom)

@@ -12,10 +12,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.Feed
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.Newspaper
+import androidx.compose.material.icons.outlined.Feed
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -55,8 +55,8 @@ class MainActivity : ComponentActivity() {
                 val items = listOf(
                     BottomNavigationItem(
                         title = getString(R.string.news),
-                        selectedIcon = Icons.Filled.Newspaper,
-                        unselectedIcon = Icons.Outlined.Newspaper,
+                        selectedIcon = Icons.Filled.Feed,
+                        unselectedIcon = Icons.Outlined.Feed,
                     ),
                     BottomNavigationItem(
                         title = getString(R.string.bookmarks),
