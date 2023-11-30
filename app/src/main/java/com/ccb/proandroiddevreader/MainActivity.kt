@@ -9,14 +9,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Feed
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.Feed
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -27,17 +21,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
 import com.ccb.proandroiddevreader.feed.FeedScreen
 import com.ccb.proandroiddevreader.feed.FeedViewModel
 import com.ccb.proandroiddevreader.feed.models.News
-import com.ccb.proandroiddevreader.ui.model.BottomNavigationItem
+import com.ccb.proandroiddevreader.ui.model.Screen
 import com.ccb.proandroiddevreader.ui.theme.ProAndroidDevReaderTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -53,72 +54,123 @@ class MainActivity : ComponentActivity() {
             ProAndroidDevReaderTheme {
                 val state by feedViewModel.state.collectAsState()
                 val items = listOf(
-                    BottomNavigationItem(
-                        title = getString(R.string.news),
-                        selectedIcon = Icons.Filled.Feed,
-                        unselectedIcon = Icons.Outlined.Feed,
-                    ),
-                    BottomNavigationItem(
-                        title = getString(R.string.bookmarks),
-                        selectedIcon = Icons.Filled.Bookmarks,
-                        unselectedIcon = Icons.Outlined.Bookmarks,
-                    ),
-                    BottomNavigationItem(
-                        title = getString(R.string.settings),
-                        selectedIcon = Icons.Filled.Settings,
-                        unselectedIcon = Icons.Outlined.Settings,
-                    ),
+                    Screen.Feed,
+                    Screen.Bookmark,
+                    Screen.Setting,
                 )
-                var selectedItemIndex by rememberSaveable {
-                    mutableIntStateOf(0)
-                }
-
+                val navController = rememberNavController()
                 Scaffold(
                     bottomBar = {
-                        NavigationBar {
-                            items.forEachIndexed { index, item ->
-                                NavigationBarItem(
-                                    selected = selectedItemIndex == index,
-                                    onClick = {
-                                        selectedItemIndex = index
-                                    },
-                                    label = {
-                                        Text(text = item.title)
-                                    },
-                                    icon = {
-                                        Box {
-                                            Icon(
-                                                imageVector = if (selectedItemIndex == index) {
-                                                    item.selectedIcon
-                                                } else {
-                                                    item.unselectedIcon
-                                                },
-                                                contentDescription = item.title,
-                                            )
-                                        }
-                                    },
+                        BottomNavigation(items, navController)
+                    }
+                ) { paddings ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.Feed.route
+                    ) {
+                        navigation(
+                            startDestination = "feed_list",
+                            route = Screen.Feed.route,
+                        ) {
+                            composable("feed_list") {
+                                FeedScreen(
+                                    feedViewState = state,
+                                    modifier = Modifier
+                                        .padding(paddings)
+                                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                                        .testTag("MainScreen"),
+                                    onSelectedNews = ::onSelectedNews,
+                                    onRefresh = { feedViewModel.updateFeed() },
+                                    onToggleBookmark = { news ->
+                                        feedViewModel.toggleNewsToBookmark(news)
+                                    }
                                 )
+
+                                LaunchedEffect(Unit) {
+                                    feedViewModel.updateFeed()
+                                }
+                            }
+                        }
+                        navigation(
+                            startDestination = "bookmark_list",
+                            route = Screen.Bookmark.route,
+                        ) {
+                            composable("bookmark_list") {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(paddings),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = "Bookmarks is coming soon",
+                                        modifier = Modifier
+                                            .padding(paddings),
+                                    )
+                                }
+                            }
+                        }
+                        navigation(
+                            startDestination = "setting_list",
+                            route = Screen.Setting.route,
+                        ) {
+                            composable("setting_list") {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(paddings),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = "Settings is coming soon...",
+                                        modifier = Modifier
+                                            .padding(paddings),
+                                    )
+                                }
                             }
                         }
                     }
-                ) {
-                    FeedScreen(
-                        feedViewState = state,
-                        modifier = Modifier
-                            .padding(it)
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                            .testTag("MainScreen"),
-                        onSelectedNews = ::onSelectedNews,
-                        onRefresh = { feedViewModel.updateFeed() },
-                        onToggleBookmark = { news ->
-                            feedViewModel.toggleNewsToBookmark(news)
-                        }
-                    )
-
-                    LaunchedEffect(Unit) {
-                        feedViewModel.updateFeed()
-                    }
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun BottomNavigation(
+        items: List<Screen>,
+        navController: NavHostController,
+    ) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
+        NavigationBar {
+            items.forEach { screen ->
+                NavigationBarItem(
+                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    label = {
+                        Text(text = stringResource(id = screen.title))
+                    },
+                    icon = {
+                        Box {
+                            Icon(
+                                imageVector = if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) {
+                                    screen.selectedIcon
+                                } else {
+                                    screen.unselectedIcon
+                                },
+                                contentDescription = stringResource(id = screen.title),
+                            )
+                        }
+                    },
+                )
             }
         }
     }

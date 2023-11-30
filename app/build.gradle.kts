@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.threetenabp.time)
     implementation(libs.coil.compose)
     implementation(libs.timber)
+    implementation(libs.androidx.compose.navigation)
 
     // Testing
     testImplementation(libs.junit)
