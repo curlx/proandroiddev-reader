@@ -17,7 +17,7 @@ class HandleBookmarksUseCase @Inject constructor(
             .map {
                 val now = Instant.now().toEpochMilli()
                 it.map { newsEntity ->
-                    newsEntity.toNews(now)
+                    newsEntity.toNews(now).copy(isBookmarked = true)
                 }
             }
 

@@ -60,7 +60,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun toggleNewsToBookmark(news: News) {
+    fun toggleNewsBookmark(news: News) {
         viewModelScope.launch {
             try {
                 if (news.isBookmarked) {
