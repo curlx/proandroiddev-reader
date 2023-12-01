@@ -2,6 +2,8 @@ package com.ccb.proandroiddevreader.di
 
 import android.content.Context
 import androidx.room.Room
+import com.ccb.proandroiddevreader.bookmark.usecases.HandleBookmarksUseCase
+import com.ccb.proandroiddevreader.bookmark.usecases.HandleBookmarksUseCaseImpl
 import com.ccb.proandroiddevreader.repository.BookmarkRepository
 import com.ccb.proandroiddevreader.repository.BookmarkRepositoryImpl
 import com.ccb.proandroiddevreader.repository.NewsFeedRepository
@@ -32,6 +34,14 @@ class AppModule {
         newsFeedApi: NewsFeedApi,
     ): NewsFeedRepository {
         return NewsFeedRepositoryImpl(newsFeedApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHandleBookmarksUseCase(
+        bookmarkRepository: BookmarkRepository,
+    ): HandleBookmarksUseCase {
+        return HandleBookmarksUseCaseImpl(bookmarkRepository)
     }
 
     @Provides

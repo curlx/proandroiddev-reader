@@ -41,7 +41,6 @@ class FeedViewModel @Inject constructor(
     fun updateFeed() {
         _state.update { it.copy(isRefreshing = true) }
         viewModelScope.launch {
-            handleBookmarksUseCase.getAllBookmarks()
             getNewsFeedUseCase.getNewsFeed()
                 .onSuccess { newsList ->
                     _state.update { feedViewState ->
@@ -54,7 +53,7 @@ class FeedViewModel @Inject constructor(
                 .onFailure {
                     Timber.e(it)
                     _state.update { feedViewState ->
-                        feedViewState.copy(isRefreshing = false)
+                        feedViewState.copy(isRefreshing = true)
                     }
                 }
         }

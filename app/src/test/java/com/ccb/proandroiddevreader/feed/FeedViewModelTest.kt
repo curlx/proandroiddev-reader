@@ -4,11 +4,11 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import assertk.assertions.isTrue
 import com.ccb.proandroiddevreader.common.MainCoroutineScopeRule
 import com.ccb.proandroiddevreader.common.returns
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.feed.usecases.GetNewsFeedUseCase
+import com.ccb.proandroiddevreader.mocks.FakeHandleBookmarksUseCase
 import com.ccb.proandroiddevreader.mocks.MockModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -29,11 +29,13 @@ class FeedViewModelTest {
 
     @Mock
     private lateinit var getNewsFeedUseCase: GetNewsFeedUseCase
+    private lateinit var handleBookmarksUseCase: FakeHandleBookmarksUseCase
     private lateinit var viewModel: FeedViewModel
 
     @Before
     fun setUp() {
-        viewModel = FeedViewModel(getNewsFeedUseCase)
+        handleBookmarksUseCase = FakeHandleBookmarksUseCase()
+        viewModel = FeedViewModel(getNewsFeedUseCase, handleBookmarksUseCase)
     }
 
     @Test
@@ -49,17 +51,32 @@ class FeedViewModelTest {
         getNewsFeedUseCase.getNewsFeed() returns Result.success(listOf(MockModel.news))
 
         viewModel.state.test {
-            awaitItem()
+            assertThat(awaitItem()).isEqualTo(FeedViewState())
 
             viewModel.updateFeed()
-            assertThat(awaitItem().isRefreshing).isTrue()
+            assertThat(awaitItem()).isEqualTo(FeedViewState(
+                news = listOf(MockModel.news)
+            ))
+        }
+    }
 
-            assertThat(awaitItem()).isEqualTo(
-                FeedViewState(
-                    news = listOf(MockModel.news),
-                    isRefreshing = false
-                )
-            )
+    @Test
+    fun `update the news bookmark when adding or removing the bookmark`() = runTest {
+        getNewsFeedUseCase.getNewsFeed() returns Result.success(listOf(MockModel.news))
+
+        viewModel.state.test {
+            assertThat(awaitItem()).isEqualTo(FeedViewState())
+            viewModel.updateFeed()
+
+            viewModel.toggleNewsBookmark(MockModel.news)
+            assertThat(awaitItem()).isEqualTo(FeedViewState(
+                news = listOf(MockModel.news.copy(isBookmarked = true))
+            ))
+
+            viewModel.toggleNewsBookmark(MockModel.news.copy(isBookmarked = true))
+            assertThat(awaitItem()).isEqualTo(FeedViewState(
+                news = listOf(MockModel.news)
+            ))
         }
     }
 
@@ -68,17 +85,10 @@ class FeedViewModelTest {
         getNewsFeedUseCase.getNewsFeed() returns Result.failure<List<News>>(Throwable("Fail to fetch new news"))
 
         viewModel.state.test {
-            awaitItem()
+            assertThat(awaitItem()).isEqualTo(FeedViewState())
 
             viewModel.updateFeed()
-            assertThat(awaitItem().isRefreshing).isTrue()
-
-            assertThat(awaitItem()).isEqualTo(
-                FeedViewState(
-                    news = emptyList(),
-                    isRefreshing = false
-                )
-            )
+            assertThat(viewModel.state.value).isEqualTo(FeedViewState())
         }
     }
 }
