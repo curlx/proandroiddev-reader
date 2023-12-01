@@ -56,7 +56,6 @@ class MainActivity : ComponentActivity() {
                 val items = listOf(
                     Screen.Feed,
                     Screen.Bookmark,
-                    Screen.Setting,
                 )
                 val navController = rememberNavController()
                 Scaffold(
@@ -104,25 +103,6 @@ class MainActivity : ComponentActivity() {
                                 ) {
                                     Text(
                                         text = "Bookmarks is coming soon",
-                                        modifier = Modifier
-                                            .padding(paddings),
-                                    )
-                                }
-                            }
-                        }
-                        navigation(
-                            startDestination = "setting_list",
-                            route = Screen.Setting.route,
-                        ) {
-                            composable("setting_list") {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(paddings),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Text(
-                                        text = "Settings is coming soon...",
                                         modifier = Modifier
                                             .padding(paddings),
                                     )
