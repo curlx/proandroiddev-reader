@@ -2,7 +2,10 @@ package com.ccb.proandroiddevreader.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ccb.proandroiddevreader.R
 import com.ccb.proandroiddevreader.bookmark.usecases.HandleBookmarksUseCase
+import com.ccb.proandroiddevreader.feed.extensions.toErrorMessage
+import com.ccb.proandroiddevreader.feed.models.FeedException
 import com.ccb.proandroiddevreader.feed.models.News
 import com.ccb.proandroiddevreader.feed.usecases.GetNewsFeedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +49,7 @@ class FeedViewModel @Inject constructor(
         }
     }
     fun updateFeed() {
-        _state.update { it.copy(isRefreshing = true) }
+        _state.update { it.copy(isRefreshing = true, errorStringRes = null) }
         viewModelScope.launch {
             getNewsFeedUseCase.getNewsFeed()
                 .onSuccess { newsList ->
@@ -54,13 +57,17 @@ class FeedViewModel @Inject constructor(
                         feedViewState.copy(
                             news = newsList,
                             isRefreshing = false,
+                            errorStringRes = null,
                         )
                     }
                 }
-                .onFailure {
-                    Timber.e(it)
+                .onFailure { throwable ->
+                    Timber.e(throwable)
                     _state.update { feedViewState ->
-                        feedViewState.copy(isRefreshing = true)
+                        feedViewState.copy(
+                            isRefreshing = false,
+                            errorStringRes = (throwable as? FeedException)?.error?.toErrorMessage() ?: R.string.unknown_error,
+                        )
                     }
                 }
         }

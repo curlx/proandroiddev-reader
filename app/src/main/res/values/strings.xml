@@ -7,4 +7,9 @@
     <string name="published_by">Published %1$s by %2$s</string>
     <string name="settings">Settings</string>
     <string name="there_is_no_bookmarked_news">There is no bookmarked news</string>
+    <string name="unknown_error">Unknown error, please check again later</string>
+    <string name="service_unavailable">Please check your internet connection and try to reload again</string>
+    <string name="client_error">App error, please update app version or try again later</string>
+    <string name="server_error">Server error, please check again later</string>
+    <string name="reload">Retry</string>
 </resources>

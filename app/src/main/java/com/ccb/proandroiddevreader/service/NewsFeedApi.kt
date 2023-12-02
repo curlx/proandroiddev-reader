@@ -1,5 +1,7 @@
 package com.ccb.proandroiddevreader.service
 
+import com.ccb.proandroiddevreader.feed.models.FeedError
+import com.ccb.proandroiddevreader.feed.models.FeedException
 import com.ccb.proandroiddevreader.service.models.NewsFeedResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -17,11 +19,17 @@ class NewsFeedApi @Inject constructor(
             val result = httpClient.get(BASE_URL) {
                 contentType(ContentType.Application.Json)
             }
+
+            when(result.status.value) {
+                in 200..299 -> Unit
+                in 400..499 -> throw FeedException(FeedError.CLIENT_ERROR)
+                500 -> throw FeedException(FeedError.SERVER_ERROR)
+                else -> throw FeedException(FeedError.UNKNOWN_ERROR)
+            }
+
             Result.success(result.body())
         } catch (t: Throwable) {
-            // TODO: create self exception
-            Timber.e(t)
-            Result.failure(t)
+            Result.failure(FeedException(FeedError.SERVICE_UNAVAILABLE))
         }
     }
 

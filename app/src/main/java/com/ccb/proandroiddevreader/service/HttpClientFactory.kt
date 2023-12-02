@@ -8,6 +8,10 @@ import kotlinx.serialization.json.Json
 
 class HttpClientFactory {
     fun create(): HttpClient = HttpClient(Android) {
+        engine {
+            connectTimeout = 15_000
+            socketTimeout = 15_000
+        }
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
