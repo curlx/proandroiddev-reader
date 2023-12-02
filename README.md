@@ -1,9 +1,7 @@
 # ProAndroidDev Reader
-WORK IN PROGRESS... first complete version by 3rd December 2023
-
 A demo application to show Android articles from https://proandroiddev.com/.
 
-![screenshot](docs/screenshot.jpg)
+![screenshot](docs/screenshot.jpg) ![screenshot](docs/screenshot1.jpg)
 
 If you found the articles are useful, please support writers by subscribing to the website. Thank you.
 
@@ -22,5 +20,6 @@ If you found the articles are useful, please support writers by subscribing to t
 - more...
 
 # Upcoming features
-- Bookmark articles
+- ~~Bookmark articles~~ DONE
+- Get a notification when there is a new news
 - more...
