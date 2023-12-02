@@ -25,6 +25,7 @@ class FeedViewModel @Inject constructor(
     private val handleBookmarksUseCase: HandleBookmarksUseCase,
 ) : ViewModel() {
 
+    private var isRequestedInitialUpdate: Boolean = false
     private val bookmarkedNewsGuid: Flow<HashSet<String>> = handleBookmarksUseCase.getAllBookmarks()
         .map { it.map { news -> news.guid }.toHashSet() }
 
@@ -38,6 +39,12 @@ class FeedViewModel @Inject constructor(
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), FeedViewState())
 
+    fun requestInitialUpdate() {
+        if (!isRequestedInitialUpdate) {
+            updateFeed()
+            isRequestedInitialUpdate = true
+        }
+    }
     fun updateFeed() {
         _state.update { it.copy(isRefreshing = true) }
         viewModelScope.launch {

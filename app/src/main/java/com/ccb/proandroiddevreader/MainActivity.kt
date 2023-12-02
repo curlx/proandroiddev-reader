@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
                                 )
 
                                 LaunchedEffect(Unit) {
-                                    feedViewModel.updateFeed()
+                                    feedViewModel.requestInitialUpdate()
                                 }
                             }
                         }
